@@ -114,7 +114,6 @@ function modifyMC(layers, MCname, reverse) {
                     document.selection[0].setTextAttr("italic", curElement.italic);
                     document.selection[0].setTextAttr("fillColor", curElement.color);
                     document.selection[0].setTextAttr("alignment", curElement.alignment);
-                    document.height = curElement.height;
                     //ToDo:: @javd, @ulix ::: set textFieldProperty from json file!!!
                     document.setElementProperty('textType', 'dynamic');
                     document.scaleSelection(curElement.scaleX, curElement.scaleY);
@@ -138,6 +137,7 @@ function modifyMC(layers, MCname, reverse) {
                         curFilters.push({name: filtersToSet[f].name, angle: filtersToSet[f].angle, blurX: filtersToSet[f].blurX, blurY: filtersToSet[f].blurY, distance: filtersToSet[f].distance, color: filtersToSet[f].color, quality: q, strength: filtersToSet[f].strength * 100, knockout: false, inner: false, hideObject: false});
                     }
                     document.setFilters(curFilters);
+                    document.height = curElement.height;
                     break;
                 case "sprite":
                     if (document.library.itemExists(curElement.libraryName)) {
