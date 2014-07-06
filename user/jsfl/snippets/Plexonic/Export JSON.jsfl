@@ -64,6 +64,9 @@ $p.crateMovieClipMetadata = function (item, metadata) {
     var q = 1;
     for (var i = 0; i < item.timeline.layers.length; i++) {
         var layer = item.timeline.layers[i];
+        if ( layer.layerType == 'folder') {
+            continue;
+        }
         var layerObject = {};
         var layerMeta = {};
         if (item.timeline.findLayerIndex(layer.name).length == 1)
