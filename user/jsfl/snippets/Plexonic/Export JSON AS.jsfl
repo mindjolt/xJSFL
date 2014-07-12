@@ -224,12 +224,12 @@ $p.setTextFieldAttrsMetadata = function (textAttrs, elementMetadata) {
 
 $p.crateElementGenericMetadata = function (element) {
     var metadata = {
-        x: Math.round(element.x*100)/100,
-        y: Math.round(element.y*100)/100,
-        scaleX: Math.round(element.scaleX*100)/100,
-        scaleY: Math.round(element.scaleY*100)/100,
-        skewX : Math.round(element.skewX*100)/100,
-        skewY : Math.round(element.skewY*100)/100
+        x: element.x,
+        y:element.y,
+        scaleX:element.scaleX,
+        scaleY:element.scaleY,
+        skewX : element.skewX,
+        skewY : element.skewY
 };
     return metadata;
 };
