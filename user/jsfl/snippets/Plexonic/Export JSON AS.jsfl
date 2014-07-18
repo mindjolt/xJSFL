@@ -33,50 +33,59 @@ $p.structurize = function (selectedItems) {
     for each (var item in selectedItems) {
         var itemMetadata = {};
         documentMetadata[item.itemName] = itemMetadata;
-        itemMetadata.libraryName = item.name;
-        itemMetadata.layers = [];
+        itemMetadata.libraryName=item.name;
+        itemMetadata.layers=[];
         $p.crateMovieClipMetadata(item, itemMetadata.layers);
     }
-    $p.structureJson = JSON.formatJson(JSON.encode(documentMetadata));
+    $p.structureJson =JSON.formatJson(JSON.encode(documentMetadata));
 };
 
 
 $p.saveStructure = function () {
-
-
-    var file = new File( URI.toPath(fl.browseForFileURL(
-        "save", //
-        "Choose json file location", //
-        "JSON File (*.json)", //
-        "json" //
-    )));
+        fl.getDocumentDOM().addDataToDocument("sourceJSONPath", "string",
+            URI.toPath(fl.browseForFileURL(
+                "save", //
+                "Choose json file location", //
+                "JSON File (*.json)", //
+                "json" //
+            )));
+    var file = new File($p.getJsonUri());
     file.write($p.structureJson);
     file.save();
 };
 
+$p.getJsonUri = function () {
+     return fl.getDocumentDOM().getDataFromDocument("sourceJSONPath");
+};
+
 $p.crateMovieClipMetadata = function (item, metadata) {
-    var q = 1;
+    var q=1;
     for (var i = 0; i < item.timeline.layers.length; i++) {
         var layer = item.timeline.layers[i];
-        if ( layer.layerType == "folder") {
+
+        //skip guide layers !
+        if (layer.layerType == 'guide' || layer.layerType == 'folder') {
             continue;
         }
+
         var layerObject = {};
         var layerMeta = {};
-        if (item.timeline.findLayerIndex(layer.name).length == 1)
+        if (item.timeline.findLayerIndex(layer.name).length==1)
             layerMeta.name = layer.name;
-        else {
-            layerMeta.name = layer.name + "_" + q;
+        else
+        {
+            layerMeta.name = layer.name+"_"+q;
             q++;
         }
-        if (layer.parentLayer != null) {
-            layerMeta.folder = layer.parentLayer.name;
+        if (layer.parentLayer!=null)
+        {
+            layerMeta.folder=layer.parentLayer.name;
         }
         else
-            layerMeta.folder = "";
-        layerMeta.layerType = layer.layerType;
-        layerObject.layerMeta = layerMeta;
-        layerObject.children = [];
+            layerMeta.folder="";
+        //layerMeta.layerType = layer.layerType;
+        layerObject.layerMeta=layerMeta;
+        layerObject.children=[];
         for (var j = 0; j < layer.frames.length; j++) {
             var frame = layer.frames[j];
             if (j == frame.startFrame) {
@@ -97,7 +106,7 @@ $p.crateMovieClipMetadata = function (item, metadata) {
 $p.crateElementMetadata = function (element, metadata) {
     var elementMetadata = $p.crateElementGenericMetadata(element);
     var elementName = "";
-    var elementLibraryName = "";
+	var elementLibraryName = "";
     var elementKind = "";
     var customMetadataSetter = null;
     switch (getElementType(element)) {
@@ -108,7 +117,7 @@ $p.crateElementMetadata = function (element, metadata) {
         case ELEMENT_TYPE_SYMBOL:
             elementName = element.name;
             elementKind = "sprite";
-            elementLibraryName = element.libraryItem.name;
+			elementLibraryName = element.libraryItem.name;
             customMetadataSetter = $p.symbolCustomMetadataSetter;
             break;
         case ELEMENT_TYPE_TEXTFIELD:
@@ -145,7 +154,7 @@ $p.shapeCustomMetadataSetter = function (element, elementMetadata) {
 };
 
 $p.formatColor = function (colorString) {
-    return "0x" + colorString.substr(1, colorString.length - 1);
+    return "0x" + colorString.substr(1, colorString.length-1);
 };
 
 $p.setElementWidthAndHeightMetadata = function (element, elementMetadata) {
@@ -155,12 +164,12 @@ $p.setElementWidthAndHeightMetadata = function (element, elementMetadata) {
 
 $p.symbolCustomMetadataSetter = function (element, elementMetadata) {
     elementMetadata.alpha = element.colorAlphaPercent * .01;
-    elementMetadata.layers = $p.crateMovieClipMetadata(element.libraryItem, []);
+    elementMetadata.layers = $p.crateMovieClipMetadata(element.libraryItem,[]);
 };
 
 $p.setElementNameAndKind = function (name, libraryName, kind, elementMetadata) {
     elementMetadata.name = name;
-    elementMetadata.libraryName = libraryName;
+	elementMetadata.libraryName = libraryName;
     elementMetadata.kind = kind;
 };
 
